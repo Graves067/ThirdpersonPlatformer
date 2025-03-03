@@ -2,23 +2,28 @@ using System;
 using Unity.Cinemachine;
 using UnityEngine;
 
-public class LaunchIndicator : MonoBehaviour
+public class Movement : MonoBehaviour
 {
     [SerializeField] private Boolean Grounded = true;
     [SerializeField] private Rigidbody Rigidbody;
     [SerializeField] private float Speed = 2f;
     [SerializeField] private float jumpForce = 2.0f;
+    [SerializeField] private CinemachineCamera freeLookCamera;
+
     public int MaxJump = 2;
     public int jCount = 0;
 
     // Update is called once per frame
     void Update()
     {
+        
         Vector3 inputVector = Vector3.zero;
         if (Input.GetKey(KeyCode.W))
         {
             inputVector += Vector3.right;
-        }
+        } 
+
+
 
         if (Input.GetKeyDown(KeyCode.Space) && jCount < MaxJump)
         {
@@ -33,13 +38,11 @@ public class LaunchIndicator : MonoBehaviour
             jCount = 0; // Reset jump count on ground
         }
 
-
-
-
+        transform.forward = freeLookCamera.transform.forward;
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
 
         Vector3 inputXZPlane = new(inputVector.x, 0, inputVector.y);
-        Rigidbody.AddForce(inputXZPlane * Speed);
-
+        Rigidbody.AddForce(freeLookCamera.transform.forward * Speed);
     }
     private void OnCollisionEnter(Collision collision)
     {
