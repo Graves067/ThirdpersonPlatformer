@@ -16,11 +16,18 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+        transform.forward = freeLookCamera.transform.forward;
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+
+        Cursor.lockState = CursorLockMode.Locked;
+
+
         Vector3 inputVector = Vector3.zero;
         if (Input.GetKey(KeyCode.W))
         {
-            inputVector += Vector3.right;
+            Vector3 inputXZPlane = new(inputVector.x, 0, inputVector.y);
+            Rigidbody.AddForce(freeLookCamera.transform.forward * Speed);
         } 
 
 
@@ -38,11 +45,7 @@ public class Movement : MonoBehaviour
             jCount = 0; // Reset jump count on ground
         }
 
-        transform.forward = freeLookCamera.transform.forward;
-        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-
-        Vector3 inputXZPlane = new(inputVector.x, 0, inputVector.y);
-        Rigidbody.AddForce(freeLookCamera.transform.forward * Speed);
+        
     }
     private void OnCollisionEnter(Collision collision)
     {
